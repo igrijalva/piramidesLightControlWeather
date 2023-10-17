@@ -1,4 +1,6 @@
 const axios = require('axios');
+// const fetch = require('node-fetch');
+//import fetch from 'node-fetch';
 const { exec } = require("child_process");
 
 // URL de la API REST que deseas consumir
@@ -11,23 +13,47 @@ const pinOff = 1;
 
 
 // Realiza una solicitud GET a la API
-axios.get(apiUrl)
-  .then(response => {
+//axios.get(apiUrl)
+//  .then(response => {
     // Maneja la respuesta de la API aquí
     //console.log('Datos de la API:', response.data);
+//    console.log('*********************************');
+//    console.log('País: '+response.data.sys.country);
+//    console.log('Localidad: '+response.data.name);
+//     console.log('Temperatura: '+response.data.main.temp);
+//     console.log('Amanecer: '+response.data.sys.sunrise);
+//     console.log('Atardecer: '+response.data.sys.sunset);
+//     console.log('*********************************');
+//     validateTime(response.data.sys.sunrise, response.data.sys.sunset);
+//   })
+//   .catch(error => {
+//     // Maneja los errores en caso de que ocurran
+//     console.error('Error al consumir la API:', error);
+//   });
+
+
+// Realiza una solicitud GET a la API
+fetch(apiUrl)
+.then(response => response.json()) // Convierte la respuesta a JSON
+.then(data => {
+  // Maneja los datos de la API aquí
+  //console.log('Datos de la API:', data);
+  console.log('*********************************');
+    console.log('País: '+data.sys.country);
+    console.log('Localidad: '+data.name);
+    console.log('Temperatura: '+data.main.temp);
+    console.log('Amanecer: '+data.sys.sunrise);
+    console.log('Atardecer: '+data.sys.sunset);
     console.log('*********************************');
-    console.log('País: '+response.data.sys.country);
-    console.log('Localidad: '+response.data.name);
-    console.log('Temperatura: '+response.data.main.temp);
-    console.log('Amanecer: '+response.data.sys.sunrise);
-    console.log('Atardecer: '+response.data.sys.sunset);
-    console.log('*********************************');
-    validateTime(response.data.sys.sunrise, response.data.sys.sunset);
-  })
-  .catch(error => {
-    // Maneja los errores en caso de que ocurran
-    console.error('Error al consumir la API:', error);
-  });
+    validateTime(data.sys.sunrise, data.sys.sunset);
+})
+.catch(error => {
+  // Maneja los errores en caso de que ocurran
+  console.error('Error al consumir la API:', error);
+});
+
+
+
 
   function validateTime(sunrise, sunset) {
     const currentDate = new Date();
