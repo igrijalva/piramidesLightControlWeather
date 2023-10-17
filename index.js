@@ -1,7 +1,7 @@
-const axios = require('axios');
-// const fetch = require('node-fetch');
+//const axios = require('axios');
+import fetch from 'node-fetch';
 //import fetch from 'node-fetch';
-const { exec } = require("child_process");
+import { exec } from "child_process";
 
 // URL de la API REST que deseas consumir
 const apiUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=20.542264&lon=-100.450079&units=metric&appid=1c4fcb9e49e2f65b288fdc1897accb65';
