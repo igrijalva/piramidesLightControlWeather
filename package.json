@@ -2,5 +2,14 @@
   "name": "js",
   "version": "1.0.0",
   "private": true,
-  "dependencies": {}
+  "description": "[Edit in Codeflow ⚡️](https://stackblitz.com/~/github.com/igrijalva/piramidesLightControlWeather)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.5.1"
+  }
 }
