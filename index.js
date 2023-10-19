@@ -1,6 +1,4 @@
-//const axios = require('axios');
-import fetch from 'node-fetch';
-//import fetch from 'node-fetch';
+import https from 'https';
 import { exec } from "child_process";
 
 // URL de la API REST que deseas consumir
@@ -13,46 +11,40 @@ const pinOff = 1;
 
 
 // Realiza una solicitud GET a la API
-//axios.get(apiUrl)
-//  .then(response => {
-    // Maneja la respuesta de la API aquí
-    //console.log('Datos de la API:', response.data);
-//    console.log('*********************************');
-//    console.log('País: '+response.data.sys.country);
-//    console.log('Localidad: '+response.data.name);
-//     console.log('Temperatura: '+response.data.main.temp);
-//     console.log('Amanecer: '+response.data.sys.sunrise);
-//     console.log('Atardecer: '+response.data.sys.sunset);
-//     console.log('*********************************');
-//     validateTime(response.data.sys.sunrise, response.data.sys.sunset);
-//   })
-//   .catch(error => {
-//     // Maneja los errores en caso de que ocurran
-//     console.error('Error al consumir la API:', error);
-//   });
+https.get(apiUrl, (response) => {
+    let data = '';
+  
+    // Escucha el evento 'data' para recopilar los datos de la respuesta
+    response.on('data', (chunk) => {
+      data += chunk;
+    });
+  
+    // Escucha el evento 'end' para procesar los datos completos
+    response.on('end', () => {
+      try {
+        // Convierte los datos JSON en un objeto JavaScript (si corresponde)
+        const jsonData = JSON.parse(data);
+        // console.log('Datos de la API:', jsonData);
+
+        console.log('*********************************');
+        console.log('País: '+jsonData.sys.country);
+        console.log('Localidad: '+jsonData.name);
+        console.log('Temperatura: '+jsonData.main.temp);
+        console.log('Amanecer: '+jsonData.sys.sunrise);
+        console.log('Atardecer: '+jsonData.sys.sunset);
+        console.log('*********************************');
 
 
-// Realiza una solicitud GET a la API
-fetch(apiUrl)
-.then(response => response.json()) // Convierte la respuesta a JSON
-.then(data => {
-  // Maneja los datos de la API aquí
-  //console.log('Datos de la API:', data);
-  console.log('*********************************');
-    console.log('País: '+data.sys.country);
-    console.log('Localidad: '+data.name);
-    console.log('Temperatura: '+data.main.temp);
-    console.log('Amanecer: '+data.sys.sunrise);
-    console.log('Atardecer: '+data.sys.sunset);
-    console.log('*********************************');
-    validateTime(data.sys.sunrise, data.sys.sunset);
-})
-.catch(error => {
-  // Maneja los errores en caso de que ocurran
-  console.error('Error al consumir la API:', error);
-});
 
-
+      } catch (error) {
+        // Maneja el error si no se puede analizar la respuesta como JSON
+        console.error('Error al analizar los datos de la API:', error);
+      }
+    });
+  }).on('error', (error) => {
+    // Maneja los errores de la solicitud HTTP
+    console.error('Error al consumir la API:', error);
+  });
 
 
   function validateTime(sunrise, sunset) {
