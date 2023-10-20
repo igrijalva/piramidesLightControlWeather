@@ -1,5 +1,9 @@
-import https from 'https';
-import { exec } from "child_process";
+//import https from 'https';
+//import { exec } from "child_process";
+const https = require('https');
+const { exec } = require("child_process");
+const args = require('minimist')(process.argv.slice(2))
+const moment = require('moment-timezone');
 
 // URL de la API REST que deseas consumir
 const apiUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=20.542264&lon=-100.450079&units=metric&appid=1c4fcb9e49e2f65b288fdc1897accb65';
@@ -27,13 +31,25 @@ https.get(apiUrl, (response) => {
         // console.log('Datos de la API:', jsonData);
 
         console.log('*********************************');
-        console.log('País: '+jsonData.sys.country);
+        console.log('Pais: '+jsonData.sys.country);
         console.log('Localidad: '+jsonData.name);
         console.log('Temperatura: '+jsonData.main.temp);
         console.log('Amanecer: '+jsonData.sys.sunrise);
         console.log('Atardecer: '+jsonData.sys.sunset);
         console.log('*********************************');
 
+        var currentDate = moment.tz("America/Mexico_City") ; //new Date(); //.toLocaleString('es-MX', { timeZone: "America/Mexico_City" });
+        //console.log( currentDate.format('H mm') );
+        //var currentDate = currentD.toDate();
+        //console.log( currentDate.unix() );
+
+        if(args && args['timestamp']) {
+          console.log('timestamp recibido: '+args['timestamp']);
+          //currentDate = new Date( parseInt(args['timestamp'])*1000 );
+          currentDate =  moment.tz( parseInt(args['timestamp'])*1000, "America/Mexico_City" );
+        }
+
+        validateTime( currentDate, jsonData.sys.sunrise, jsonData.sys.sunset );
 
 
       } catch (error) {
@@ -47,28 +63,32 @@ https.get(apiUrl, (response) => {
   });
 
 
-  function validateTime(sunrise, sunset) {
-    const currentDate = new Date();
-    const sunriseDate = new Date( parseInt(sunrise)*1000 );
-    const sunsetDate = new Date( parseInt(sunset)*1000 );
+  function validateTime(currentDate,sunrise, sunset) {
+    //const currentDate = new Date();
+    //const sunriseDate = new Date( parseInt(sunrise)*1000 );
+    //const sunsetDate = new Date( parseInt(sunset)*1000 );
+
+    const sunriseDate = moment.tz( parseInt(sunrise)*1000, "America/Mexico_City" );
+    const sunsetDate = moment.tz( parseInt(sunset)*1000, "America/Mexico_City" );
+
     console.log('*********************************');
-    console.log('Actual:    '+currentDate.toLocaleString()+'    '+currentDate.getHours()+':'+currentDate.getMinutes());
-    console.log('Amanecer:  '+sunriseDate.toLocaleString()+'    '+sunriseDate.getHours()+':'+sunriseDate.getMinutes());
-    console.log('Atardecer: '+sunsetDate.toLocaleString() +'    '+sunsetDate.getHours() +':'+sunsetDate.getMinutes() );
+    console.log('Actual:    '+currentDate.format()+'    '+currentDate.format('H')+':'+currentDate.format('mm'));
+    console.log('Amanecer:  '+sunriseDate.format()+'    '+sunriseDate.format('H')+':'+sunriseDate.format('mm'));
+    console.log('Atardecer: '+sunsetDate.format() +'    '+sunsetDate.format('H') +':'+sunsetDate.format('mm') );
     console.log('*********************************');
     
 
     // Verifica Amanecer
-    if(currentDate.getHours()==sunriseDate.getHours() && currentDate.getMinutes()==sunriseDate.getMinutes() ) {
-        console.log('Ahora es el Amanecer: '+sunriseDate.getHours()+':'+sunriseDate.getMinutes() );
+    if(currentDate.format('H')==sunriseDate.format('H') && currentDate.format('mm')==sunriseDate.format('mm') ) {
+        console.log('Ahora es el Amanecer: '+sunriseDate.format('H')+':'+sunriseDate.format('mm') );
         console.log('Apagando luces...');
         executeCommand(sala, pinOff);
         executeCommand(arbol, pinOff);
     }
 
     //Verifica Atrdecer
-    if(currentDate.getHours()==sunsetDate.getHours() && currentDate.getMinutes()==sunsetDate.getMinutes() ) {
-        console.log('Ahora es el Atardecer: '+sunsetDate.getHours()+':'+sunsetDate.getMinutes() );
+    if(currentDate.format('H')==sunsetDate.format('H') && currentDate.format('mm')==sunsetDate.format('mm') ) {
+        console.log('Ahora es el Atardecer: '+sunsetDate.format('H')+':'+sunsetDate.format('mm') );
         console.log('Encendiendo luces...');
         executeCommand(sala, pinOn);
         executeCommand(arbol, pinOn);
