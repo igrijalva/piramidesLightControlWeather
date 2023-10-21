@@ -1,11 +1,9 @@
-//import https from 'https';
-//import { exec } from "child_process";
 const https = require('https');
 const { exec } = require("child_process");
 const args = require('minimist')(process.argv.slice(2))
 const moment = require('moment-timezone');
 
-// URL de la API REST que deseas consumir
+
 const apiUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=20.542264&lon=-100.450079&units=metric&appid=1c4fcb9e49e2f65b288fdc1897accb65';
 
 const sala = 23;
@@ -38,14 +36,11 @@ https.get(apiUrl, (response) => {
         console.log('Atardecer: '+jsonData.sys.sunset);
         console.log('*********************************');
 
-        var currentDate = moment.tz("America/Mexico_City") ; //new Date(); //.toLocaleString('es-MX', { timeZone: "America/Mexico_City" });
-        //console.log( currentDate.format('H mm') );
-        //var currentDate = currentD.toDate();
-        //console.log( currentDate.unix() );
+        var currentDate = moment.tz("America/Mexico_City") ;
 
         if(args && args['timestamp']) {
           console.log('timestamp recibido: '+args['timestamp']);
-          //currentDate = new Date( parseInt(args['timestamp'])*1000 );
+          
           currentDate =  moment.tz( parseInt(args['timestamp'])*1000, "America/Mexico_City" );
         }
 
@@ -64,9 +59,6 @@ https.get(apiUrl, (response) => {
 
 
   function validateTime(currentDate,sunrise, sunset) {
-    //const currentDate = new Date();
-    //const sunriseDate = new Date( parseInt(sunrise)*1000 );
-    //const sunsetDate = new Date( parseInt(sunset)*1000 );
 
     const sunriseDate = moment.tz( parseInt(sunrise)*1000, "America/Mexico_City" );
     const sunsetDate = moment.tz( parseInt(sunset)*1000, "America/Mexico_City" );
